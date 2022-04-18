@@ -1,0 +1,3 @@
+CREATE DATABASE api_gateway;
+CREATE DATABASE account;
+CREATE DATABASE reservations

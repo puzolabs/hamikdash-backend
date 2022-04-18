@@ -11,3 +11,16 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "12340:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: demo@puzolabs.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+volumes:
+  pgadmin-data:
