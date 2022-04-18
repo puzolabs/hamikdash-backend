@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  puzolabs.hamikdash.server:
+    image: ${DOCKER_REGISTRY-}puzolabshamikdashserver
+    build:
+      context: .
+      dockerfile: PuzoLabs.Hamikdash.Server/Dockerfile
+
+  puzolabs.hamikdash.reservations:
+    image: ${DOCKER_REGISTRY-}puzolabshamikdashreservations
+    build:
+      context: .
+      dockerfile: PuzoLabs.Hamikdash.Reservations/Dockerfile
