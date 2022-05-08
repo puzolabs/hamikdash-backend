@@ -21,6 +21,10 @@ namespace PuzoLabs.Hamikdash.Reservations
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration(configurationBuilder =>
+                {
+                    configurationBuilder.AddJsonFile("korbanot.json");
                 });
     }
 }

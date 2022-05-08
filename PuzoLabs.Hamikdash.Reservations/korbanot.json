@@ -1,0 +1,16 @@
+{
+  "nazir": {
+    "type": "minha",
+    "taharaLevel": "tvila",
+    "requirements": [ "bird", "water" ],
+    "eatDuration": "yomValayla",
+    "workDuration": "30"
+  },
+  "toda": {
+    "type": "ola",
+    "taharaLevel": "paraAduma",
+    "requirements": [ "cow" ],
+    "eatDuration": "2days",
+    "workDuration": "10"
+  }
+}

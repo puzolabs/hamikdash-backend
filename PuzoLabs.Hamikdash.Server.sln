@@ -9,6 +9,10 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuzoLabs.Hamikdash.Reservations", "PuzoLabs.Hamikdash.Reservations\PuzoLabs.Hamikdash.Reservations.csproj", "{1553A456-E9F1-40F7-839B-F92F84C83925}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuzoLabs.Hamikdash.Reservations.Tests", "PuzoLabs.Hamikdash.Reservations.Tests\PuzoLabs.Hamikdash.Reservations.Tests.csproj", "{A22C8BEC-0616-41E9-9BCE-2B6278943161}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuzoLabs.Hamikdash.Reservations.Db", "PuzoLabs.Hamikdash.Reservations.Db\PuzoLabs.Hamikdash.Reservations.Db.csproj", "{AEE9716D-D39B-4A6B-B642-593A93CB496E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{1553A456-E9F1-40F7-839B-F92F84C83925}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1553A456-E9F1-40F7-839B-F92F84C83925}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1553A456-E9F1-40F7-839B-F92F84C83925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22C8BEC-0616-41E9-9BCE-2B6278943161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22C8BEC-0616-41E9-9BCE-2B6278943161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22C8BEC-0616-41E9-9BCE-2B6278943161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22C8BEC-0616-41E9-9BCE-2B6278943161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE9716D-D39B-4A6B-B642-593A93CB496E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE9716D-D39B-4A6B-B642-593A93CB496E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE9716D-D39B-4A6B-B642-593A93CB496E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE9716D-D39B-4A6B-B642-593A93CB496E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

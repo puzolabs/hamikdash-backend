@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PuzoLabs.Hamikdash.Reservations.Dal;
+using PuzoLabs.Hamikdash.Reservations.Db;
+using PuzoLabs.Hamikdash.Reservations.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +29,12 @@ namespace PuzoLabs.Hamikdash.Reservations
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.Configure<DbSettings>(Configuration.GetSection($"{DbSettings.SettingsKeyName}"));
+            services.AddHostedService<DatabaseMigrator>();
+
+            services.AddSingleton<IDatabase, Database>();
+            services.AddSingleton<IReservationService, ReservationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
