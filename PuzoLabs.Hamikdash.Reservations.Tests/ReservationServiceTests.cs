@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PuzoLabs.Hamikdash.Reservations.Dal;
+using PuzoLabs.Hamikdash.Reservations.Db;
 using PuzoLabs.Hamikdash.Reservations.Services;
 
 namespace PuzoLabs.Hamikdash.Reservations.Tests

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PuzoLabs.Hamikdash.Reservations.Dal.Models
+namespace PuzoLabs.Hamikdash.Reservations.Db.Models
 {
     public enum ReservationStatus
     {

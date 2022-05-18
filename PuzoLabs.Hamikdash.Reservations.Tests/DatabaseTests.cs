@@ -4,10 +4,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PuzoLabs.Hamikdash.Reservations.Dal;
-using PuzoLabs.Hamikdash.Reservations.Dal.Models;
 using PuzoLabs.Hamikdash.Reservations.Db;
+using PuzoLabs.Hamikdash.Reservations.Db.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,13 +49,25 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
         }
 
         [TestMethod]
-        public async Task TestAltar()
+        public async Task TestAddAltar()
         {
-            //var options = _config.Get<DbSettings>();
-            //var options = _config.GetSection($"{DbSettings.SettingsKeyName}").Get<DbSettings>();
             IDatabase database = new Database(_options);
             int id = await database.AddAltar(new Altar() { IsAvailable = true });
             Assert.IsNotNull(id);
+        }
+
+        [TestMethod]
+        public async Task TestGetAvailableAltars()
+        {
+            IDatabase database = new Database(_options);
+
+            await database.RemoveAllAltars();
+            await database.AddAltar(new Altar() { IsAvailable = true });
+            await database.AddAltar(new Altar() { IsAvailable = false });
+            await database.AddAltar(new Altar() { IsAvailable = true });
+            var altars = await database.GetAvailableAltars();
+            
+            Assert.AreEqual(2, altars.ToArray().Length);
         }
     }
 }

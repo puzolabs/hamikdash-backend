@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using PuzoLabs.Hamikdash.Reservations.Dal;
 using PuzoLabs.Hamikdash.Reservations.Db;
 using PuzoLabs.Hamikdash.Reservations.Services;
 using System;

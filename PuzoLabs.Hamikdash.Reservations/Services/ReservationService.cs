@@ -1,5 +1,5 @@
-﻿using PuzoLabs.Hamikdash.Reservations.Dal;
-using PuzoLabs.Hamikdash.Reservations.Dal.Models;
+﻿using PuzoLabs.Hamikdash.Reservations.Db;
+using PuzoLabs.Hamikdash.Reservations.Db.Models;
 using PuzoLabs.Hamikdash.Reservations.Services.Models;
 using System;
 using System.Collections.Generic;
