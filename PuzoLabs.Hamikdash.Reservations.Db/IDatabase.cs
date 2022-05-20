@@ -10,10 +10,9 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
 {
     public interface IDatabase
     {
-        Task<IEnumerable<Reservation>> GetReservationsForAltarInTimeRangeOrderedAscending(int altarId, DateTime from, DateTime to);
-        Task<int> AddAltar(Altar altar);
-        Task RemoveAllAltars();
-        Task<IEnumerable<Altar>> GetAvailableAltars();
+        Task Do(string query);
+        Task<T> DoAndReturn<T>(string query);
+        Task<IEnumerable<T>> QueryAsync<T>(string query);
     }
 
     public class Database : IDatabase
@@ -26,8 +25,6 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
         {
             _connectionString = dbSettings.Value.ToConnectionString();
         }
-
-        #region Infra
 
         public async Task Open()
         {
@@ -43,7 +40,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
             _opened = false;
         }
 
-        private async Task Do(string query)
+        public async Task Do(string query)
         {
             if (!_opened)
                 await Open();
@@ -54,7 +51,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
             }
         }
 
-        private async Task<T> DoAndReturn<T>(string query)
+        public async Task<T> DoAndReturn<T>(string query)
         {
             if (!_opened)
                 await Open();
@@ -80,33 +77,9 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
         //    }
         //}
 
-        #endregion
-
-        public async Task<IEnumerable<Altar>> GetAvailableAltars()
+        public async Task<IEnumerable<T>> QueryAsync<T>(string query)
         {
-            string query = "SELECT * FROM altars WHERE is_available = true";
-
-            var altars = await _connection.QueryAsync<Altar>(query);
-
-            return altars;
-        }
-
-        public async Task<int> AddAltar(Altar altar)
-        {
-            string query = $"INSERT INTO altars (is_available) VALUES ({altar.IsAvailable}) RETURNING {nameof(altar.Id)}";
-            return await DoAndReturn<int>(query);
-        }
-
-        public async Task RemoveAllAltars()
-        {
-            string query = "DELETE FROM altars";
-
-            await Do(query);
-        }
-
-        public Task<IEnumerable<Reservation>> GetReservationsForAltarInTimeRangeOrderedAscending(int altarId, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
+            return await _connection.QueryAsync<T>(query);
         }
     }
 }

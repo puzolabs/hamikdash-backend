@@ -15,23 +15,25 @@ namespace PuzoLabs.Hamikdash.Reservations.Services
 
     public class ReservationService : IReservationService
     {
-        private readonly IDatabase _database;
+        private readonly IAltarRepository _altarRepository;
+        private readonly IReservationRepository _reservationRepository;
 
-        public ReservationService(IDatabase database)
+        public ReservationService(IAltarRepository altarRepository, IReservationRepository reservationRepository)
         {
-            _database = database;
+            _altarRepository = altarRepository;
+            _reservationRepository = reservationRepository;
         }
 
         public async Task<IEnumerable<AvailableTimeDto>> FindAvailableTime(string type, DateTime from, DateTime to, int workDuration, int restTime)
         {
             SortedList<DateTime, AvailableTimeDto> result = new SortedList<DateTime, AvailableTimeDto>();
 
-            IEnumerable<Altar> altars = await _database.GetAvailableAltars();
+            IEnumerable<Altar> altars = await _altarRepository.GetAvailableAltars();
 
             foreach (Altar altar in altars)
             {
                 //get from db, from future reservations table, the busy times for this altar
-                Reservation[] reservations = (await _database.GetReservationsForAltarInTimeRangeOrderedAscending(altar.Id, from, to)).ToArray();
+                Reservation[] reservations = (await _reservationRepository.GetReservationsForAltarInTimeRangeOrderedAscending(altar.Id, from, to)).ToArray();
 
                 //find the available times between the busy times
                 for (int i = 0; i < reservations.Length - 1; i++)

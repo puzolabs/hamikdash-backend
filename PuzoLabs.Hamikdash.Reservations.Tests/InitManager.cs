@@ -11,7 +11,8 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
 {
     public class InitManager
     {
-        public IOptions<DbSettings> DbOptions { get; private set; }
+        public IAltarRepository AltarRepository { get; private set; }
+        public IReservationRepository ReservationRepository { get; private set; }
 
         public async Task Init()
         {
@@ -29,10 +30,14 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
 
             services.Configure<DbSettings>(config.GetSection($"{DbSettings.SettingsKeyName}"));
             services.AddSingleton<IHostedService, DatabaseMigrator>();
+            services.AddSingleton<IDatabase, Database>();
+            services.AddSingleton<IAltarRepository, AltarRepository>();
+            services.AddSingleton<IReservationRepository, ReservationRepository>();
 
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            DbOptions = serviceProvider.GetRequiredService<IOptions<DbSettings>>();
+            AltarRepository = serviceProvider.GetRequiredService<IAltarRepository>();
+            ReservationRepository = serviceProvider.GetRequiredService<IReservationRepository>();
 
             //migrate db
             var migrator = serviceProvider.GetRequiredService<IHostedService>();

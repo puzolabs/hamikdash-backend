@@ -8,36 +8,33 @@ using System.Threading.Tasks;
 namespace PuzoLabs.Hamikdash.Reservations.Tests
 {
     [TestClass]
-    public class DatabaseTests
+    public class AltarRepositoryTests
     {
-        IOptions<DbSettings> _options;
+        IAltarRepository _altarRepository;
 
         [TestInitialize]
         public async Task InitConfiguration()
         {
             InitManager initManager = new InitManager();
             await initManager.Init();
-            _options = initManager.DbOptions;
+            _altarRepository = initManager.AltarRepository;
         }
 
         [TestMethod]
         public async Task TestAddAltar()
         {
-            IDatabase database = new Database(_options);
-            int id = await database.AddAltar(new Altar() { IsAvailable = true });
+            int id = await _altarRepository.AddAltar(new Altar() { IsAvailable = true });
             Assert.IsNotNull(id);
         }
 
         [TestMethod]
         public async Task TestGetAvailableAltars()
         {
-            IDatabase database = new Database(_options);
-
-            await database.RemoveAllAltars();
-            await database.AddAltar(new Altar() { IsAvailable = true });
-            await database.AddAltar(new Altar() { IsAvailable = false });
-            await database.AddAltar(new Altar() { IsAvailable = true });
-            var altars = await database.GetAvailableAltars();
+            await _altarRepository.RemoveAllAltars();
+            await _altarRepository.AddAltar(new Altar() { IsAvailable = true });
+            await _altarRepository.AddAltar(new Altar() { IsAvailable = false });
+            await _altarRepository.AddAltar(new Altar() { IsAvailable = true });
+            var altars = await _altarRepository.GetAvailableAltars();
             
             Assert.AreEqual(2, altars.ToArray().Length);
         }

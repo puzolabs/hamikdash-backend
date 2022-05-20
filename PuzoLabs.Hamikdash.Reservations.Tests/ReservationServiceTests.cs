@@ -11,7 +11,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
         public void TestReserve()
         {
             IDatabase database = null;
-            IReservationService reservationService = new ReservationService(database);
+            //IReservationService reservationService = new ReservationService(database);
         }
     }
 }
