@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Npgsql;
-using PuzoLabs.Hamikdash.Reservations.Db.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
@@ -62,23 +60,11 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
             }
         }
 
-        //private async Task Read(string query)
-        //{
-        //    if (!_opened)
-        //        await Open();
-
-        //    await using (var cmd = new NpgsqlCommand(query, _connction))
-        //    await using (var reader = await cmd.ExecuteReaderAsync())
-        //    {
-        //        while (await reader.ReadAsync())
-        //        {
-        //            Console.WriteLine(reader.GetString(0));
-        //        }
-        //    }
-        //}
-
         public async Task<IEnumerable<T>> QueryAsync<T>(string query)
         {
+            if (!_opened)
+                await Open();
+
             return await _connection.QueryAsync<T>(query);
         }
     }

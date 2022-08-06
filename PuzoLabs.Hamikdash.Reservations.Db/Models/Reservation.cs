@@ -2,6 +2,15 @@
 
 namespace PuzoLabs.Hamikdash.Reservations.Db.Models
 {
+    public enum KorbanTypes
+    {
+        Ola,
+        Minha,
+        Shlamim,
+        AshamTaluy,
+        AshamVaday,
+        Bicurim,
+    }
     public enum ReservationStatus
     {
         Pending,
@@ -9,13 +18,13 @@ namespace PuzoLabs.Hamikdash.Reservations.Db.Models
         Done
     }
 
-    public class Reservation
+    public record Reservation
     {
-        public int Id { get; set; }
-        public string Type { get; set; }
+        public Guid Id { get; set; }
+        public KorbanTypes Type { get; set; }
         public int AltarId { get; set; }
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public Guid UserId { get; set; }
         public ReservationStatus Status { get; set; }
     }
