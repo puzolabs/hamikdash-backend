@@ -26,10 +26,10 @@ namespace PuzoLabs.Hamikdash.Reservations.Controllers
 
         [HttpGet("FindAvailableTime")]
         //http://localhost:7005/api/Reservation/FindAvailableTime?type=nazir&from=4%2F20%2F2022%204%3A50%3A00%20PM&to=4%2F20%2F2022%206%3A50%3A00%20PM
-        public async Task<IEnumerable<AvailableTimeDto>> FindAvailableTime(string type, DateTime from, DateTime to)
+        public async Task<Dictionary<int, List<AvailableTimeDto>>> FindAvailableTime(string type, DateTime from, DateTime to)
         {
             //todo: validate 'type'
-            //validate from is at least now this minute and not in the past
+            //validate 'from' is at least now this minute and not in the past
 
             //get from the db\settings the working time needed for this korban type
             int workDuration = Convert.ToInt32(_configuration[$"{type}:workDuration"]);
@@ -37,7 +37,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Controllers
             //get from the db\settings the cohen rest time between korbanot
             int restTime = Convert.ToInt32(_configuration["restTime"]);
 
-            return await _reservationService.FindAvailableTime(type, from, to, workDuration, restTime);
+            return await _reservationService.FindAvailableTime(from, to, workDuration, restTime);
         }
     }
 }

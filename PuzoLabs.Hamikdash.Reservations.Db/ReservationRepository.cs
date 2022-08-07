@@ -47,8 +47,11 @@ namespace PuzoLabs.Hamikdash.Reservations.Db
         {
             string query = @$"
                 SELECT * FROM {TABLE_NAME}
-                WHERE altarId = '{altarId}' and startDate >= '{from}' and endDate <= '{to}'
-                order by startDate asc";
+                WHERE altarId = '{altarId}' and (
+                (startDate >= '{from}' and endDate <= '{to}') or
+                (startDate <= '{from}' and endDate >= '{from}' and endDate <= '{to}') or
+                (startDate >= '{from}' and startDate <= '{to}' and endDate >= '{to}')
+                ) order by startDate asc";
 
             var reservations = await _database.QueryAsync<Reservation>(query);
 

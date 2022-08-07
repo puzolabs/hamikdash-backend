@@ -128,7 +128,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
         }
 
         [TestMethod]
-        public async Task TwoAndAHalfReservationsExists_TestGetReservationsForAltarInTimeRangeOrderedAscending_ReturnsTwo()
+        public async Task TwoAndAHalfReservationsExists_TestGetReservationsForAltarInTimeRangeOrderedAscending_ReturnsThree()
         {
             DateTime from1 = new DateTime(2022, 8, 6, 22, 53, 13);
             DateTime to1 = new DateTime(2022, 8, 6, 23, 13, 13);
@@ -177,13 +177,14 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
 
             Reservation[] reservations = (await _reservationRepository.GetReservationsForAltarInTimeRangeOrderedAscending(2, from1, from3.AddMinutes(5))).ToArray();
 
-            Assert.AreEqual(2, reservations.Length);
+            Assert.AreEqual(3, reservations.Length);
             Assert.AreEqual(reservation1, reservations[0]);
             Assert.AreEqual(reservation2, reservations[1]);
+            Assert.AreEqual(reservation3, reservations[2]);
         }
 
         [TestMethod]
-        public async Task TwoAndAHalfReservationsExistsWhichTheFirstOneOfOtherAltar_TestGetReservationsForAltarInTimeRangeOrderedAscending_ReturnsTheSecondOne()
+        public async Task TwoAndAHalfReservationsExistsWhichTheFirstOneOfOtherAltar_TestGetReservationsForAltarInTimeRangeOrderedAscending_ReturnsTheLastTwo()
         {
             DateTime from1 = new DateTime(2022, 8, 6, 22, 53, 13);
             DateTime to1 = new DateTime(2022, 8, 6, 23, 13, 13);
@@ -232,8 +233,9 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
 
             Reservation[] reservations = (await _reservationRepository.GetReservationsForAltarInTimeRangeOrderedAscending(2, from1, from3.AddMinutes(5))).ToArray();
 
-            Assert.AreEqual(1, reservations.Length);
+            Assert.AreEqual(2, reservations.Length);
             Assert.AreEqual(reservation2, reservations[0]);
+            Assert.AreEqual(reservation3, reservations[1]);
         }
     }
 }

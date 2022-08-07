@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Threading;
 using System.Threading.Tasks;
 using PuzoLabs.Hamikdash.Reservations.Db;
+using PuzoLabs.Hamikdash.Reservations.Services;
 
 namespace PuzoLabs.Hamikdash.Reservations.Tests
 {
@@ -13,6 +14,7 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
     {
         public IAltarRepository AltarRepository { get; private set; }
         public IReservationRepository ReservationRepository { get; private set; }
+        public IReservationService ReservationService { get; set; }
 
         public async Task Init()
         {
@@ -34,6 +36,8 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
             services.AddSingleton<IAltarRepository, AltarRepository>();
             services.AddSingleton<IReservationRepository, ReservationRepository>();
 
+            services.AddSingleton<IReservationService, ReservationService>();
+
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
             AltarRepository = serviceProvider.GetRequiredService<IAltarRepository>();
@@ -42,6 +46,8 @@ namespace PuzoLabs.Hamikdash.Reservations.Tests
             //migrate db
             var migrator = serviceProvider.GetRequiredService<IHostedService>();
             await migrator.StartAsync(new CancellationToken());
+
+            ReservationService = serviceProvider.GetRequiredService<IReservationService>();
         }
     }
 }

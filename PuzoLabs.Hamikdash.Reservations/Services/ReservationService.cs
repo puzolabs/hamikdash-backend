@@ -10,7 +10,8 @@ namespace PuzoLabs.Hamikdash.Reservations.Services
 {
     public interface IReservationService
     {
-        public Task<IEnumerable<AvailableTimeDto>> FindAvailableTime(string type, DateTime from, DateTime to, int workDuration, int restTime);
+        public Task<Dictionary<int, List<AvailableTimeDto>>> FindAvailableTime(DateTime from, DateTime to, int workDuration, int restTime);
+        public Task Reserve(KorbanTypes korbanType, AvailableTimeDto timeDto, Guid userId);
     }
 
     public class ReservationService : IReservationService
@@ -24,46 +25,87 @@ namespace PuzoLabs.Hamikdash.Reservations.Services
             _reservationRepository = reservationRepository;
         }
 
-        public async Task<IEnumerable<AvailableTimeDto>> FindAvailableTime(string type, DateTime from, DateTime to, int workDuration, int restTime)
+        public async Task<Dictionary<int, List<AvailableTimeDto>>> FindAvailableTime(DateTime from, DateTime to, int workDuration, int restTime)
         {
-            SortedList<DateTime, AvailableTimeDto> result = new SortedList<DateTime, AvailableTimeDto>();
+            Dictionary<int, List<AvailableTimeDto>> allResults = new Dictionary<int, List<AvailableTimeDto>>();
 
             IEnumerable<Altar> altars = await _altarRepository.GetAvailableAltars();
 
             foreach (Altar altar in altars)
             {
+                List<AvailableTimeDto> results = new List<AvailableTimeDto>();
+
                 //get from db, from future reservations table, the busy times for this altar
                 Reservation[] reservations = (await _reservationRepository.GetReservationsForAltarInTimeRangeOrderedAscending(altar.Id, from, to)).ToArray();
 
-                //find the available times between the busy times
-                for (int i = 0; i < reservations.Length - 1; i++)
+                if (reservations == null || reservations.Length == 0)
                 {
-                    Reservation currentReservation = reservations[i];
-                    Reservation nextReservation = reservations[i + 1];
-
-                    if ((nextReservation.From - currentReservation.To).Minutes > workDuration)
-                    {
-                        IEnumerable<AvailableTimeDto> timeSlots = FindAvailableTimeSlotsPerWorkDuration(currentReservation.To, nextReservation.From, workDuration, restTime);
-
-                        foreach (var ts in timeSlots)
-                            result.Add(ts.From, ts);
-                    }
+                    FindAvailableTimeSlotsPerWorkDuration(from, to, workDuration, restTime, altar.Id, results);
                 }
+                else
+                {
+                    //find the available times before the busy times
+                    if (reservations[0].StartDate > from)
+                        FindAvailableTimeSlotsPerWorkDuration(from, reservations[0].StartDate, workDuration, restTime, altar.Id, results);
+
+                    FindAvailableTimesBetweenTheBusyTimes(reservations, workDuration, restTime, altar.Id, results);
+
+                    //find the available times after the busy times
+                    if (reservations[^1].EndDate < to)
+                        FindAvailableTimeSlotsPerWorkDuration(reservations[^1].EndDate, to, workDuration, restTime, altar.Id, results);
+                }
+
+                allResults.Add(altar.Id, results);
             }
 
-            return result.Values;
+            return allResults;
         }
 
-        private IEnumerable<AvailableTimeDto> FindAvailableTimeSlotsPerWorkDuration(DateTime from, DateTime to, int workDuration, int restDuration)
+        private void FindAvailableTimesBetweenTheBusyTimes(Reservation[] reservations, int workDuration, int restTime, int altarId, List<AvailableTimeDto> results)
         {
-            return new List<AvailableTimeDto>()
+            for (int i = 0; i < reservations.Length - 1; i++)
             {
-                new AvailableTimeDto()
+                Reservation currentReservation = reservations[i];
+                Reservation nextReservation = reservations[i + 1];
+
+                if ((nextReservation.StartDate - currentReservation.EndDate).Minutes >= workDuration + restTime)
                 {
-                    From = from,
-                    To = to.AddMinutes(-restDuration),
+                    FindAvailableTimeSlotsPerWorkDuration(currentReservation.EndDate, nextReservation.StartDate, workDuration, restTime, altarId, results);
                 }
+            }
+        }
+
+        private void FindAvailableTimeSlotsPerWorkDuration(DateTime from, DateTime to, int workDuration, int restDuration, int altarId, List<AvailableTimeDto> results)
+        {
+            DateTime nextFrom = from, nextTo = nextFrom.AddMinutes(workDuration + restDuration);
+
+            do
+            {
+                results.Add(new AvailableTimeDto()
+                {
+                    From = nextFrom,
+                    To = nextTo,
+                    AltarId = altarId
+                });
+
+                nextFrom = nextTo;
+                nextTo = nextFrom.AddMinutes(workDuration + restDuration);
+            } while (nextTo <= to);
+        }
+
+        public async Task Reserve(KorbanTypes korbanType, AvailableTimeDto timeDto, Guid userId)
+        {
+            Reservation reservation = new Reservation()
+            {
+                AltarId = timeDto.AltarId,
+                StartDate = timeDto.From,
+                EndDate = timeDto.To,
+                Status = ReservationStatus.Pending,
+                Type = korbanType,
+                UserId = userId,
             };
+
+            await _reservationRepository.Add(reservation);
         }
     }
 }
